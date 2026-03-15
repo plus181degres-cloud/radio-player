@@ -1,35 +1,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 72px; overflow: hidden; background: transparent; font-family: 'Space Mono', monospace; }
-
-  .radio-bar {
-    position: relative; width: 100%; height: 72px;
-    background: #ffffff; border-top: 1px solid #1a1a1a;
-    display: flex; align-items: center; padding: 0 24px; cursor: pointer;
-  }
-
+  .radio-bar { position: relative; width: 100%; height: 72px; background: #ffffff; border-top: 1px solid #1a1a1a; display: flex; align-items: center; padding: 0 24px; cursor: pointer; }
   .radio-section-station { display: flex; align-items: center; gap: 12px; min-width: 160px; }
   .radio-station-dot { width: 7px; height: 7px; background: #c8c4bc; flex-shrink: 0; transition: background .4s; }
   .radio-bar.playing .radio-station-dot { background: #1a1a1a; animation: blink 2.2s ease-in-out infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
   .radio-station-label { font-size: 8px; letter-spacing: .2em; color: #b0aca4; text-transform: uppercase; line-height: 1; margin-bottom: 3px; }
-  .radio-station-name  { font-size: 12px; font-weight: 700; color: #1a1a1a; letter-spacing: .02em; line-height: 1; text-transform: uppercase; }
-
+  .radio-station-name { font-size: 12px; font-weight: 700; color: #1a1a1a; letter-spacing: .02em; line-height: 1; text-transform: uppercase; }
   .radio-div { width: 1px; height: 28px; background: #e4e2dc; margin: 0 20px; flex-shrink: 0; }
-
   .radio-play-btn { width: 40px; height: 40px; background: #1a1a1a; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, transform .1s; position: relative; z-index: 2; }
   .radio-play-btn:hover { background: #333; }
   .radio-play-btn:active { transform: scale(.95); }
   .radio-play-btn svg { width: 15px; height: 15px; fill: #fafaf8; }
-
   .radio-section-live { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
-
   .radio-artwork { width: 52px; height: 52px; background: #e8e6e0; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #e4e2dc; }
   .radio-artwork img { width: 100%; height: 100%; object-fit: cover; }
   .radio-artwork-placeholder svg { width: 18px; height: 18px; fill: #b0aca4; }
-
   .radio-visualizer { display: flex; align-items: center; gap: 2px; height: 24px; flex-shrink: 0; }
   .radio-bar-vis { width: 2px; height: 3px; background: #d8d5cf; transition: background .3s; }
   .radio-bar.playing .radio-bar-vis { background: #1a1a1a; }
@@ -49,27 +37,22 @@
   .radio-bar.playing .radio-bar-vis:nth-child(14) { animation: rw 1.4s ease-in-out infinite .07s; }
   .radio-bar.playing .radio-bar-vis:nth-child(15) { animation: rw 1.0s ease-in-out infinite .21s; }
   @keyframes rw { 0%,100%{height:2px} 50%{height:20px} }
-
   .radio-np-wrap { min-width: 0; }
   .radio-np-label { font-size: 8px; letter-spacing: .18em; color: #b0aca4; text-transform: uppercase; margin-bottom: 2px; }
   .radio-np-title { font-size: 13px; font-weight: 700; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .radio-np-sub   { font-size: 10px; color: #888480; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .radio-np-genre { font-size: 9px; color: #b0aca4; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
-
   .radio-expand-hint { font-size: 8px; letter-spacing: .15em; color: #c8c4bc; text-transform: uppercase; flex-shrink: 0; margin-right: 6px; }
   .radio-chevron { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: #c8c4bc; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
   .radio-bar:hover .radio-chevron { stroke: #1a1a1a; }
-
   .radio-section-volume { display: flex; align-items: center; gap: 10px; min-width: 140px; }
   .radio-vol-icon svg { width: 14px; height: 14px; fill: #b0aca4; display: block; }
   .radio-vol-slider { -webkit-appearance: none; appearance: none; width: 100px; height: 2px; background: linear-gradient(to right,#1a1a1a 80%,#d8d5cf 80%); outline: none; cursor: pointer; }
   .radio-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #1a1a1a; cursor: pointer; }
-
   .radio-live-pill { display: flex; align-items: center; gap: 6px; border: 1px solid #1a1a1a; padding: 5px 10px; opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s; flex-shrink: 0; }
   .radio-bar.playing .radio-live-pill { opacity: 1; transform: translateY(0); }
   .radio-live-dot { width: 5px; height: 5px; background: #1a1a1a; animation: blink 2s ease-in-out infinite; }
   .radio-live-text { font-size: 8px; letter-spacing: .15em; color: #1a1a1a; text-transform: uppercase; }
-
   @media (max-width: 640px) {
     html, body { height: 64px; }
     .radio-bar { padding: 0 14px; height: 64px; }
@@ -125,27 +108,21 @@
 <script>
   const vis = document.getElementById('vis');
   for (let i=0;i<15;i++){const b=document.createElement('div');b.className='radio-bar-vis';vis.appendChild(b);}
-
   const bar = document.getElementById('radioBar');
   let currentSongId = '';
-
   function post(msg){ try{window.parent.postMessage(msg,'*');}catch(e){} }
-
   window.addEventListener('message', e => {
     const d = e.data;
     if (!d?.type) return;
-
     if (d.type === 'PARENT_STATE') {
       document.getElementById('iconPlay').style.display  = d.playing ? 'none' : '';
       document.getElementById('iconPause').style.display = d.playing ? '' : 'none';
       bar.classList.toggle('playing', d.playing);
     }
-
     if (d.type === 'PARENT_NOWPLAYING') {
       document.getElementById('npTitle').textContent = d.title  || 'En cours...';
       document.getElementById('npSub').textContent   = d.artist || '';
       document.getElementById('npGenre').textContent = d.genre  || '';
-
       if (d.art && d.songId !== currentSongId) {
         currentSongId = d.songId;
         const aw = document.getElementById('artwork');
@@ -157,24 +134,17 @@
         img.onerror = () => { if(ph) ph.style.display=''; };
       }
     }
-
     if (d.type === 'PARENT_VOLUME') {
       const sl = document.getElementById('volSlider');
       sl.value = d.volume;
       sl.style.background = `linear-gradient(to right,#1a1a1a ${d.volume}%,#d8d5cf ${d.volume}%)`;
     }
   });
-
-  document.getElementById('playBtn').addEventListener('click', e => {
-    e.stopPropagation();
-    post({ type: 'RADIO_CMD_TOGGLE' });
-  });
-
+  document.getElementById('playBtn').addEventListener('click', e => { e.stopPropagation(); post({ type: 'RADIO_CMD_TOGGLE' }); });
   function handleBarClick(e) {
     if (e.target.closest('#playBtn') || e.target.closest('.radio-section-volume')) return;
     post({ type: 'RADIO_OPEN_OVERLAY' });
   }
-
   const sv = parseFloat(sessionStorage.getItem('radio_volume') || '0.8') * 100;
   const sl = document.getElementById('volSlider');
   sl.value = sv;
