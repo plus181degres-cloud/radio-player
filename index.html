@@ -73,9 +73,9 @@
     flex-shrink: 0;
   }
 
-  /* Bouton play carré */
+  /* Bouton play carré — plus petit que la pochette */
   .radio-play-btn {
-    width: 44px; height: 44px;
+    width: 40px; height: 40px;
     border-radius: 0;
     background: #1a1a1a;
     border: none;
@@ -91,7 +91,7 @@
 
   .radio-play-btn:hover { background: #333; }
   .radio-play-btn:active { transform: scale(0.95); }
-  .radio-play-btn svg { width: 16px; height: 16px; fill: #fafaf8; }
+  .radio-play-btn svg { width: 15px; height: 15px; fill: #fafaf8; }
 
   .radio-section-live {
     flex: 1;
@@ -101,8 +101,9 @@
     min-width: 0;
   }
 
+  /* Pochette plus grande que le bouton play */
   .radio-artwork {
-    width: 42px; height: 42px;
+    width: 52px; height: 52px;
     border-radius: 0;
     background: #e8e6e0;
     flex-shrink: 0;
@@ -127,7 +128,6 @@
   .radio-bar-vis {
     width: 2px; height: 3px;
     background: #d8d5cf;
-    border-radius: 0;
     transition: background 0.3s;
   }
 
@@ -163,6 +163,7 @@
     margin-bottom: 3px;
   }
 
+  /* Titre sans uppercase — respecte l'écriture originale */
   .radio-np-title {
     font-size: 11px;
     font-weight: 700;
@@ -170,8 +171,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
   }
 
   .radio-np-sub {
@@ -239,7 +239,6 @@
     align-items: center;
     gap: 6px;
     border: 1px solid #1a1a1a;
-    border-radius: 0;
     padding: 5px 10px;
     opacity: 0;
     transform: translateY(4px);
@@ -264,13 +263,15 @@
 
   @media (max-width: 640px) {
     html, body { height: 64px; }
-    .radio-bar { padding: 0 16px; height: 64px; }
-    .radio-div { margin: 0 12px; }
-    .radio-section-station { min-width: 100px; }
+    .radio-bar { padding: 0 14px; height: 64px; }
+    .radio-div { margin: 0 10px; height: 24px; }
+    .radio-section-station { min-width: 90px; }
     .radio-section-volume { display: none; }
     .radio-live-pill { display: none; }
     .radio-visualizer { display: none; }
-    .radio-artwork { width: 36px; height: 36px; }
+    /* Pochette 48px, bouton 38px sur mobile */
+    .radio-artwork { width: 48px; height: 48px; }
+    .radio-play-btn { width: 38px; height: 38px; }
     .radio-expand-hint { display: none; }
     .radio-chevron { display: none; }
   }
@@ -340,9 +341,9 @@
     const b = document.createElement('div'); b.className = 'radio-bar-vis'; radioVis.appendChild(b);
   }
 
-  const radioAudio   = document.getElementById('radioAudio');
-  const radioBar     = document.getElementById('radioBar');
-  let radioPlaying   = false;
+  const radioAudio    = document.getElementById('radioAudio');
+  const radioBar      = document.getElementById('radioBar');
+  let radioPlaying    = false;
   let radioNpInterval = null;
   let radioCurrentArt = '';
 
@@ -406,7 +407,6 @@
         radioNpInterval = setInterval(radioFetchNowPlaying, 5000);
         sessionStorage.setItem('radio_playing', '1');
       }).catch(() => {
-        /* Autoplay bloqué — on signale au parent qu'il faut un vrai tap */
         radioPostParent({ type: 'RADIO_NEED_TAP' });
       });
     }
@@ -432,7 +432,7 @@
     radioAudio.volume = v / 100;
     sessionStorage.setItem('radio_volume', v / 100);
     sl.style.background = `linear-gradient(to right, #1a1a1a ${v}%, #d8d5cf ${v}%)`;
-    radioPostParent({ type: 'RADIO_VOLUME', volume: v });
+    radioPostParent({ type: 'RADIO_VOLUME', volume: parseFloat(v) });
   }
 
   function radioHandleBarClick(e) {
@@ -449,14 +449,9 @@
     if (!e.data || !e.data.type) return;
     if (e.data.type === 'RADIO_CMD_TOGGLE') radioTogglePlay();
     if (e.data.type === 'RADIO_CMD_VOLUME') radioSetVolume(e.data.volume);
-    /* Le parent a reçu un tap utilisateur, on peut relancer */
-    if (e.data.type === 'RADIO_CMD_PLAY') {
-      radioAudio.load();
-      radioStartPlaying();
-    }
+    if (e.data.type === 'RADIO_CMD_PLAY') { radioAudio.load(); radioStartPlaying(); }
   });
 
-  /* Auto-resume 200ms */
   if (sessionStorage.getItem('radio_playing') === '1') {
     setTimeout(radioStartPlaying, 200);
   }
