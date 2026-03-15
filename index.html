@@ -1,7 +1,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-  /* Reset complet — on est dans une iframe, pas dans une vraie page */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
@@ -11,7 +10,6 @@
     background: transparent;
   }
 
-  /* ─── PLAYER BAR ─── */
   .radio-bar {
     position: relative;
     width: 100%;
@@ -358,11 +356,18 @@
     radioVis.appendChild(b);
   }
 
-  const radioAudio = document.getElementById('radioAudio');
-  const radioBar   = document.getElementById('radioBar');
-  let radioPlaying = false;
+  const radioAudio   = document.getElementById('radioAudio');
+  const radioBar     = document.getElementById('radioBar');
+  let radioPlaying   = false;
   let radioNpInterval = null;
   let radioCurrentTrack = '';
+
+  // Volume saved across pages
+  const savedVolume = parseFloat(sessionStorage.getItem('radio_volume') || '0.8');
+  radioAudio.volume = savedVolume;
+  document.getElementById('radioVolSlider').value = savedVolume * 100;
+  document.getElementById('radioVolSlider').style.background =
+    `linear-gradient(to right, #1a1a1a ${savedVolume*100}%, #d8d5cf ${savedVolume*100}%)`;
 
   function radioFetchNowPlaying() {
     fetch('https://radio.radiomiramira.com/api/nowplaying/radiomiramira')
@@ -390,6 +395,22 @@
       .catch(() => {});
   }
 
+  function radioStartPlaying() {
+    radioAudio.load();
+    radioAudio.play().then(() => {
+      radioBar.classList.add('playing');
+      document.getElementById('radioIconPlay').style.display  = 'none';
+      document.getElementById('radioIconPause').style.display = '';
+      radioFetchNowPlaying();
+      radioNpInterval = setInterval(radioFetchNowPlaying, 10000);
+      radioPlaying = true;
+      sessionStorage.setItem('radio_playing', '1');
+    }).catch(() => {
+      document.getElementById('radioNpTitle').textContent = '⚠️ Stream indisponible';
+      sessionStorage.removeItem('radio_playing');
+    });
+  }
+
   function radioTogglePlay() {
     if (radioPlaying) {
       radioAudio.pause();
@@ -400,26 +421,22 @@
       document.getElementById('radioNpSub').textContent   = '';
       clearInterval(radioNpInterval);
       radioPlaying = false;
+      sessionStorage.removeItem('radio_playing');
     } else {
-      radioAudio.load();
-      radioAudio.play().then(() => {
-        radioBar.classList.add('playing');
-        document.getElementById('radioIconPlay').style.display  = 'none';
-        document.getElementById('radioIconPause').style.display = '';
-        radioFetchNowPlaying();
-        radioNpInterval = setInterval(radioFetchNowPlaying, 10000);
-        radioPlaying = true;
-      }).catch(() => {
-        document.getElementById('radioNpTitle').textContent = '⚠️ Stream indisponible';
-      });
+      radioStartPlaying();
     }
   }
 
   function radioSetVolume(v) {
     radioAudio.volume = v / 100;
+    sessionStorage.setItem('radio_volume', v / 100);
     const slider = document.getElementById('radioVolSlider');
     slider.style.background = `linear-gradient(to right, #1a1a1a ${v}%, #d8d5cf ${v}%)`;
   }
 
-  radioAudio.volume = 0.8;
+  // Auto-resume si l'utilisateur était en train d'écouter
+  if (sessionStorage.getItem('radio_playing') === '1') {
+    // Petit délai pour laisser le navigateur charger l'iframe
+    setTimeout(radioStartPlaying, 800);
+  }
 </script>
