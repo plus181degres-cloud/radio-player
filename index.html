@@ -122,33 +122,52 @@
   <div class="radio-div"></div>
   <div class="radio-section-volume" onclick="event.stopPropagation()">
     <span class="radio-vol-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></span>
-    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80" oninput="post({type:'RADIO_CMD_VOLUME',volume:parseFloat(this.value)});this.style.background=`linear-gradient(to right,#1a1a1a ${this.value}%,#d8d5cf ${this.value}%)`">
+    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80"
+      oninput="sendVol(this.value)">
   </div>
 </div>
 
 <script>
-  const v = document.getElementById('vis');
-  for (let i=0;i<15;i++){const b=document.createElement('div');b.className='radio-bar-vis';v.appendChild(b);}
+  const vis = document.getElementById('vis');
+  for (let i=0;i<15;i++){const b=document.createElement('div');b.className='radio-bar-vis';vis.appendChild(b);}
 
   const bar = document.getElementById('radioBar');
-  let playing = false;
-  let currentSongId = '';
+  const sl  = document.getElementById('volSlider');
+  let playing = false, currentSongId = '';
 
-  function post(msg){ try{window.parent.postMessage(msg,'*');}catch(e){} }
+  /* BroadcastChannel — même canal que le SW dans le parent */
+  const CHANNEL = 'radio-miramira';
+  const bc = new BroadcastChannel(CHANNEL);
 
-  /* Reçoit les mises à jour du parent (état audio + nowplaying) */
-  window.addEventListener('message', e => {
+  function post(msg) { try { window.parent.postMessage(msg, '*'); } catch(e) {} }
+  function send(msg) { bc.postMessage(msg); }
+
+  function updateVolSlider(v) {
+    sl.value = v;
+    sl.style.background = `linear-gradient(to right,#1a1a1a ${v}%,#d8d5cf ${v}%)`;
+  }
+
+  function sendVol(v) {
+    send({ type: 'PAGE_VOLUME', volume: parseFloat(v) });
+    updateVolSlider(v);
+    post({ type: 'RADIO_CMD_VOLUME', volume: parseFloat(v) });
+  }
+
+  /* Reçoit l'état du SW */
+  bc.addEventListener('message', e => {
     const d = e.data;
     if (!d?.type) return;
 
-    if (d.type === 'PARENT_STATE') {
+    if (d.type === 'SW_STATE') {
       playing = d.playing;
       document.getElementById('iconPlay').style.display  = playing ? 'none' : '';
       document.getElementById('iconPause').style.display = playing ? '' : 'none';
       bar.classList.toggle('playing', playing);
+      updateVolSlider(d.volume);
+      post({ type: 'PARENT_STATE', playing });
     }
 
-    if (d.type === 'PARENT_NOWPLAYING') {
+    if (d.type === 'SW_NOWPLAYING') {
       document.getElementById('npTitle').textContent = d.title  || 'En cours...';
       document.getElementById('npSub').textContent   = d.artist || '';
       document.getElementById('npGenre').textContent = d.genre  || '';
@@ -163,18 +182,23 @@
         img.onload  = () => { if(ph) ph.style.display='none'; };
         img.onerror = () => { if(ph) ph.style.display=''; };
       }
-    }
 
-    if (d.type === 'PARENT_VOLUME') {
-      const sl = document.getElementById('volSlider');
-      sl.value = d.volume;
-      sl.style.background = `linear-gradient(to right,#1a1a1a ${d.volume}%,#d8d5cf ${d.volume}%)`;
+      post({ type: 'PARENT_NOWPLAYING', ...d });
     }
+  });
+
+  /* Reçoit commandes du parent (overlay) */
+  window.addEventListener('message', e => {
+    const d = e.data;
+    if (!d?.type) return;
+    if (d.type === 'RADIO_CMD_TOGGLE')  send({ type: 'PAGE_TOGGLE' });
+    if (d.type === 'RADIO_CMD_VOLUME')  { send({ type: 'PAGE_VOLUME', volume: d.volume }); updateVolSlider(d.volume); }
+    if (d.type === 'RADIO_OPEN_OVERLAY') post({ type: 'RADIO_OPEN_OVERLAY' });
   });
 
   document.getElementById('playBtn').addEventListener('click', e => {
     e.stopPropagation();
-    post({ type: 'RADIO_CMD_TOGGLE' });
+    send({ type: 'PAGE_TOGGLE' });
   });
 
   function handleBarClick(e) {
@@ -182,9 +206,10 @@
     post({ type: 'RADIO_OPEN_OVERLAY' });
   }
 
-  /* Restaure le volume affiché */
+  /* Restaure volume affiché */
   const sv = parseFloat(sessionStorage.getItem('radio_volume') || '0.8') * 100;
-  const sl = document.getElementById('volSlider');
-  sl.value = sv;
-  sl.style.background = `linear-gradient(to right,#1a1a1a ${sv}%,#d8d5cf ${sv}%)`;
+  updateVolSlider(sv);
+
+  /* Demande l'état courant au SW dès le chargement */
+  send({ type: 'PAGE_GET_STATE' });
 </script>
