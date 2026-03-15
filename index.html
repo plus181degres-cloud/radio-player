@@ -344,7 +344,7 @@
   </div>
 </div>
 
-<audio id="radioAudio">
+<audio id="radioAudio" preload="auto">
   <source src="https://radio.radiomiramira.com/listen/radiomiramira/radio.mp3" type="audio/mpeg">
 </audio>
 
@@ -356,18 +356,24 @@
     radioVis.appendChild(b);
   }
 
-  const radioAudio   = document.getElementById('radioAudio');
-  const radioBar     = document.getElementById('radioBar');
-  let radioPlaying   = false;
+  const radioAudio    = document.getElementById('radioAudio');
+  const radioBar      = document.getElementById('radioBar');
+  let radioPlaying    = false;
   let radioNpInterval = null;
   let radioCurrentTrack = '';
 
-  // Volume saved across pages
+  // Restore volume
   const savedVolume = parseFloat(sessionStorage.getItem('radio_volume') || '0.8');
   radioAudio.volume = savedVolume;
   document.getElementById('radioVolSlider').value = savedVolume * 100;
   document.getElementById('radioVolSlider').style.background =
     `linear-gradient(to right, #1a1a1a ${savedVolume*100}%, #d8d5cf ${savedVolume*100}%)`;
+
+  // Préchargement immédiat dès le chargement de l'iframe
+  // pour que le buffer soit prêt quand on lance la lecture
+  if (sessionStorage.getItem('radio_playing') === '1') {
+    radioAudio.load();
+  }
 
   function radioFetchNowPlaying() {
     fetch('https://radio.radiomiramira.com/api/nowplaying/radiomiramira')
@@ -396,7 +402,6 @@
   }
 
   function radioStartPlaying() {
-    radioAudio.load();
     radioAudio.play().then(() => {
       radioBar.classList.add('playing');
       document.getElementById('radioIconPlay').style.display  = 'none';
@@ -406,8 +411,19 @@
       radioPlaying = true;
       sessionStorage.setItem('radio_playing', '1');
     }).catch(() => {
-      document.getElementById('radioNpTitle').textContent = '⚠️ Stream indisponible';
-      sessionStorage.removeItem('radio_playing');
+      radioAudio.load();
+      radioAudio.play().then(() => {
+        radioBar.classList.add('playing');
+        document.getElementById('radioIconPlay').style.display  = 'none';
+        document.getElementById('radioIconPause').style.display = '';
+        radioFetchNowPlaying();
+        radioNpInterval = setInterval(radioFetchNowPlaying, 10000);
+        radioPlaying = true;
+        sessionStorage.setItem('radio_playing', '1');
+      }).catch(() => {
+        document.getElementById('radioNpTitle').textContent = '⚠️ Stream indisponible';
+        sessionStorage.removeItem('radio_playing');
+      });
     });
   }
 
@@ -423,6 +439,7 @@
       radioPlaying = false;
       sessionStorage.removeItem('radio_playing');
     } else {
+      radioAudio.load();
       radioStartPlaying();
     }
   }
@@ -434,9 +451,8 @@
     slider.style.background = `linear-gradient(to right, #1a1a1a ${v}%, #d8d5cf ${v}%)`;
   }
 
-  // Auto-resume si l'utilisateur était en train d'écouter
+  // Auto-resume à 200ms grâce au préchargement fait plus haut
   if (sessionStorage.getItem('radio_playing') === '1') {
-    // Petit délai pour laisser le navigateur charger l'iframe
-    setTimeout(radioStartPlaying, 800);
+    setTimeout(radioStartPlaying, 200);
   }
 </script>
