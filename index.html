@@ -68,7 +68,6 @@
   .radio-vol-icon svg { width: 14px; height: 14px; fill: #b0aca4; display: block; }
   .radio-vol-slider { -webkit-appearance: none; appearance: none; width: 100px; height: 2px; background: linear-gradient(to right,#1a1a1a 80%,#d8d5cf 80%); outline: none; cursor: pointer; }
   .radio-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #1a1a1a; cursor: pointer; }
-  .radio-vol-slider::-moz-range-thumb { width: 10px; height: 10px; background: #1a1a1a; border: none; cursor: pointer; }
 
   .radio-live-pill { display: flex; align-items: center; gap: 6px; border: 1px solid #1a1a1a; padding: 5px 10px; opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s; flex-shrink: 0; }
   .radio-bar.playing .radio-live-pill { opacity: 1; transform: translateY(0); }
@@ -88,7 +87,7 @@
   }
 </style>
 
-<div class="radio-bar" id="radioBar" onclick="radioHandleBarClick(event)">
+<div class="radio-bar" id="radioBar" onclick="handleBarClick(event)">
   <div class="radio-section-station">
     <div class="radio-station-dot"></div>
     <div>
@@ -97,23 +96,23 @@
     </div>
   </div>
   <div class="radio-div"></div>
-  <button class="radio-play-btn" id="radioPlayBtn" aria-label="Play / Pause">
-    <svg id="radioIconPlay"  viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    <svg id="radioIconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+  <button class="radio-play-btn" id="playBtn" aria-label="Play / Pause">
+    <svg id="iconPlay"  viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
   </button>
   <div class="radio-div"></div>
   <div class="radio-section-live">
-    <div class="radio-artwork" id="radioArtwork">
-      <div class="radio-artwork-placeholder" id="radioArtworkPlaceholder">
+    <div class="radio-artwork" id="artwork">
+      <div class="radio-artwork-placeholder" id="artPh">
         <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
       </div>
     </div>
-    <div class="radio-visualizer" id="radioVisualizer"></div>
+    <div class="radio-visualizer" id="vis"></div>
     <div class="radio-np-wrap">
       <div class="radio-np-label">À l'antenne</div>
-      <div class="radio-np-title" id="radioNpTitle">Play pour écouter</div>
-      <div class="radio-np-sub"   id="radioNpSub"></div>
-      <div class="radio-np-genre" id="radioNpGenre"></div>
+      <div class="radio-np-title" id="npTitle">Play pour écouter</div>
+      <div class="radio-np-sub"   id="npSub"></div>
+      <div class="radio-np-genre" id="npGenre"></div>
     </div>
   </div>
   <div class="radio-live-pill"><div class="radio-live-dot"></div><span class="radio-live-text">Live</span></div>
@@ -123,133 +122,69 @@
   <div class="radio-div"></div>
   <div class="radio-section-volume" onclick="event.stopPropagation()">
     <span class="radio-vol-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></span>
-    <input type="range" class="radio-vol-slider" id="radioVolSlider" min="0" max="100" value="80" oninput="radioSetVolume(this.value)">
+    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80" oninput="post({type:'RADIO_CMD_VOLUME',volume:parseFloat(this.value)});this.style.background=`linear-gradient(to right,#1a1a1a ${this.value}%,#d8d5cf ${this.value}%)`">
   </div>
 </div>
 
-<audio id="radioAudio" preload="auto">
-  <source src="https://radio.radiomiramira.com/listen/radiomiramira/radio.mp3" type="audio/mpeg">
-</audio>
-
 <script>
-  const vis = document.getElementById('radioVisualizer');
-  for (let i = 0; i < 15; i++) { const b = document.createElement('div'); b.className = 'radio-bar-vis'; vis.appendChild(b); }
+  const v = document.getElementById('vis');
+  for (let i=0;i<15;i++){const b=document.createElement('div');b.className='radio-bar-vis';v.appendChild(b);}
 
-  const audio = document.getElementById('radioAudio');
-  const bar   = document.getElementById('radioBar');
-  let playing = false, npTimer = null, currentArt = '', currentSongId = '';
+  const bar = document.getElementById('radioBar');
+  let playing = false;
+  let currentSongId = '';
 
-  /* Volume restore */
-  const savedVol = parseFloat(sessionStorage.getItem('radio_volume') || '0.8');
-  audio.volume = savedVol;
-  const sl = document.getElementById('radioVolSlider');
-  sl.value = savedVol * 100;
-  sl.style.background = `linear-gradient(to right,#1a1a1a ${savedVol*100}%,#d8d5cf ${savedVol*100}%)`;
+  function post(msg){ try{window.parent.postMessage(msg,'*');}catch(e){} }
 
-  if (sessionStorage.getItem('radio_playing') === '1') audio.load();
-
-  function post(msg) { try { window.parent.postMessage(msg, '*'); } catch(e) {} }
-
-  /* Refresh toutes les 2 secondes — sync titre/pochette rapide */
-  function fetchNP() {
-    fetch('https://radio.radiomiramira.com/api/nowplaying/radiomiramira')
-      .then(r => r.json())
-      .then(d => {
-        if (!d?.now_playing) return;
-        const s      = d.now_playing.song;
-        const songId = s.id || (s.title + s.artist);
-        const title  = s.title  || '';
-        const artist = s.artist || '';
-        const album  = s.album  || '';
-        const genre  = s.genre  || '';
-        const sub    = [artist, album].filter(Boolean).join(' — ');
-
-        document.getElementById('radioNpTitle').textContent = title || 'En cours...';
-        document.getElementById('radioNpSub').textContent   = sub;
-        document.getElementById('radioNpGenre').textContent = genre;
-
-        /* Pochette — ne recharge que si le morceau a changé */
-        if (s.art && songId !== currentSongId) {
-          currentSongId = songId;
-          currentArt    = s.art;
-          const artwork = document.getElementById('radioArtwork');
-          const ph      = document.getElementById('radioArtworkPlaceholder');
-          let img = artwork.querySelector('img');
-          if (!img) { img = document.createElement('img'); artwork.appendChild(img); }
-          img.src = s.art;
-          img.onload  = () => { if (ph) ph.style.display = 'none'; };
-          img.onerror = () => { if (ph) ph.style.display = ''; };
-        }
-
-        post({ type: 'RADIO_NOWPLAYING', title, artist: sub, art: s.art || '', genre });
-      })
-      .catch(() => {});
-  }
-
-  function updateUI(p) {
-    document.getElementById('radioIconPlay').style.display  = p ? 'none' : '';
-    document.getElementById('radioIconPause').style.display = p ? '' : 'none';
-    bar.classList.toggle('playing', p);
-    post({ type: 'RADIO_STATE', playing: p });
-  }
-
-  function startPlaying() {
-    audio.play().then(() => {
-      playing = true;
-      updateUI(true);
-      fetchNP();
-      clearInterval(npTimer);
-      npTimer = setInterval(fetchNP, 2000);
-      sessionStorage.setItem('radio_playing', '1');
-    }).catch(() => {
-      post({ type: 'RADIO_NEED_TAP' });
-    });
-  }
-
-  function togglePlay() {
-    if (playing) {
-      audio.pause(); playing = false; updateUI(false);
-      document.getElementById('radioNpTitle').textContent = 'En pause';
-      document.getElementById('radioNpSub').textContent   = '';
-      document.getElementById('radioNpGenre').textContent = '';
-      clearInterval(npTimer);
-      sessionStorage.removeItem('radio_playing');
-      post({ type: 'RADIO_NOWPLAYING', title: 'En pause', artist: '', art: '', genre: '' });
-    } else {
-      audio.load();
-      startPlaying();
-    }
-  }
-
-  function setVolume(v) {
-    v = parseFloat(v);
-    audio.volume = v / 100;
-    sessionStorage.setItem('radio_volume', v / 100);
-    sl.style.background = `linear-gradient(to right,#1a1a1a ${v}%,#d8d5cf ${v}%)`;
-    post({ type: 'RADIO_VOLUME', volume: v });
-  }
-
-  function radioSetVolume(v) { setVolume(v); }
-
-  function radioHandleBarClick(e) {
-    if (e.target.closest('#radioPlayBtn') || e.target.closest('.radio-section-volume')) return;
-    post({ type: 'RADIO_OPEN_OVERLAY' });
-  }
-
-  document.getElementById('radioPlayBtn').addEventListener('click', e => { e.stopPropagation(); togglePlay(); });
-
+  /* Reçoit les mises à jour du parent (état audio + nowplaying) */
   window.addEventListener('message', e => {
-    if (!e.data?.type) return;
-    if (e.data.type === 'RADIO_CMD_TOGGLE') togglePlay();
-    if (e.data.type === 'RADIO_CMD_PLAY')   { audio.load(); startPlaying(); }
-    if (e.data.type === 'RADIO_CMD_VOLUME') {
-      const v = parseFloat(e.data.volume);
-      audio.volume = v / 100;
-      sessionStorage.setItem('radio_volume', v / 100);
-      sl.value = v;
-      sl.style.background = `linear-gradient(to right,#1a1a1a ${v}%,#d8d5cf ${v}%)`;
+    const d = e.data;
+    if (!d?.type) return;
+
+    if (d.type === 'PARENT_STATE') {
+      playing = d.playing;
+      document.getElementById('iconPlay').style.display  = playing ? 'none' : '';
+      document.getElementById('iconPause').style.display = playing ? '' : 'none';
+      bar.classList.toggle('playing', playing);
+    }
+
+    if (d.type === 'PARENT_NOWPLAYING') {
+      document.getElementById('npTitle').textContent = d.title  || 'En cours...';
+      document.getElementById('npSub').textContent   = d.artist || '';
+      document.getElementById('npGenre').textContent = d.genre  || '';
+
+      if (d.art && d.songId !== currentSongId) {
+        currentSongId = d.songId;
+        const aw = document.getElementById('artwork');
+        const ph = document.getElementById('artPh');
+        let img = aw.querySelector('img');
+        if (!img) { img = document.createElement('img'); aw.appendChild(img); }
+        img.src = d.art;
+        img.onload  = () => { if(ph) ph.style.display='none'; };
+        img.onerror = () => { if(ph) ph.style.display=''; };
+      }
+    }
+
+    if (d.type === 'PARENT_VOLUME') {
+      const sl = document.getElementById('volSlider');
+      sl.value = d.volume;
+      sl.style.background = `linear-gradient(to right,#1a1a1a ${d.volume}%,#d8d5cf ${d.volume}%)`;
     }
   });
 
-  if (sessionStorage.getItem('radio_playing') === '1') setTimeout(startPlaying, 200);
+  document.getElementById('playBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    post({ type: 'RADIO_CMD_TOGGLE' });
+  });
+
+  function handleBarClick(e) {
+    if (e.target.closest('#playBtn') || e.target.closest('.radio-section-volume')) return;
+    post({ type: 'RADIO_OPEN_OVERLAY' });
+  }
+
+  /* Restaure le volume affiché */
+  const sv = parseFloat(sessionStorage.getItem('radio_volume') || '0.8') * 100;
+  const sl = document.getElementById('volSlider');
+  sl.value = sv;
+  sl.style.background = `linear-gradient(to right,#1a1a1a ${sv}%,#d8d5cf ${sv}%)`;
 </script>
