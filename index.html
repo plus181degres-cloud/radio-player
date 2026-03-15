@@ -8,8 +8,10 @@
     height: 72px;
     overflow: hidden;
     background: transparent;
+    font-family: 'Space Mono', monospace;
   }
 
+  /* ─── PLAYER BAR ─── */
   .radio-bar {
     position: relative;
     width: 100%;
@@ -21,7 +23,8 @@
     padding: 0 32px;
     gap: 0;
     box-shadow: 0 -8px 40px rgba(0,0,0,0.06);
-    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    z-index: 1;
   }
 
   .radio-bar::after {
@@ -41,8 +44,7 @@
   }
 
   .radio-station-dot {
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: #c8c4bc;
     flex-shrink: 0;
@@ -77,16 +79,14 @@
   }
 
   .radio-div {
-    width: 1px;
-    height: 32px;
+    width: 1px; height: 32px;
     background: #e4e2dc;
     margin: 0 28px;
     flex-shrink: 0;
   }
 
   .radio-play-btn {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: #1a1a1a;
     border: none;
@@ -97,21 +97,13 @@
     flex-shrink: 0;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
     box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    z-index: 2;
+    position: relative;
   }
 
-  .radio-play-btn:hover {
-    background: #333;
-    transform: scale(1.06);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-  }
-
+  .radio-play-btn:hover { background: #333; transform: scale(1.06); box-shadow: 0 4px 20px rgba(0,0,0,0.18); }
   .radio-play-btn:active { transform: scale(0.97); }
-
-  .radio-play-btn svg {
-    width: 16px;
-    height: 16px;
-    fill: #fafaf8;
-  }
+  .radio-play-btn svg { width: 16px; height: 16px; fill: #fafaf8; }
 
   .radio-section-live {
     flex: 1;
@@ -122,8 +114,7 @@
   }
 
   .radio-artwork {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 4px;
     background: #e8e6e0;
     flex-shrink: 0;
@@ -133,17 +124,8 @@
     justify-content: center;
   }
 
-  .radio-artwork img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .radio-artwork-placeholder svg {
-    width: 20px;
-    height: 20px;
-    fill: #b0aca4;
-  }
+  .radio-artwork img { width: 100%; height: 100%; object-fit: cover; }
+  .radio-artwork-placeholder svg { width: 20px; height: 20px; fill: #b0aca4; }
 
   .radio-visualizer {
     display: flex;
@@ -154,15 +136,13 @@
   }
 
   .radio-bar-vis {
-    width: 2.5px;
-    height: 4px;
+    width: 2.5px; height: 4px;
     background: #d8d5cf;
     border-radius: 2px;
     transition: background 0.3s;
   }
 
   .radio-bar.playing .radio-bar-vis { background: #1a1a1a; }
-
   .radio-bar.playing .radio-bar-vis:nth-child(1)  { animation: radio-wave 1.0s ease-in-out infinite 0.00s; }
   .radio-bar.playing .radio-bar-vis:nth-child(2)  { animation: radio-wave 0.8s ease-in-out infinite 0.11s; }
   .radio-bar.playing .radio-bar-vis:nth-child(3)  { animation: radio-wave 1.2s ease-in-out infinite 0.05s; }
@@ -205,12 +185,33 @@
 
   .radio-np-sub {
     font-size: 11px;
-    font-weight: 400;
     color: #888480;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .radio-expand-hint {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #c8c4bc;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  .radio-chevron {
+    width: 20px; height: 20px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: #c8c4bc;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.2s, transform 0.3s;
+  }
+
+  .radio-bar:hover .radio-chevron { stroke: #1a1a1a; }
 
   .radio-section-volume {
     display: flex;
@@ -219,18 +220,12 @@
     min-width: 160px;
   }
 
-  .radio-vol-icon svg {
-    width: 15px;
-    height: 15px;
-    fill: #b0aca4;
-    display: block;
-  }
+  .radio-vol-icon svg { width: 15px; height: 15px; fill: #b0aca4; display: block; }
 
   .radio-vol-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 110px;
-    height: 2px;
+    width: 110px; height: 2px;
     background: linear-gradient(to right, #1a1a1a 80%, #d8d5cf 80%);
     border-radius: 2px;
     outline: none;
@@ -239,8 +234,7 @@
 
   .radio-vol-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 12px; height: 12px;
     border-radius: 50%;
     background: #1a1a1a;
     cursor: pointer;
@@ -263,26 +257,227 @@
     flex-shrink: 0;
   }
 
-  .radio-bar.playing .radio-live-pill {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .radio-bar.playing .radio-live-pill { opacity: 1; transform: translateY(0); }
 
   .radio-live-dot {
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     border-radius: 50%;
     background: #1a1a1a;
     animation: radio-blink 2s ease-in-out infinite;
   }
 
   .radio-live-text {
-    font-family: 'Space Mono', monospace;
     font-size: 9px;
     letter-spacing: 0.15em;
     color: #1a1a1a;
     text-transform: uppercase;
   }
+
+  /* ─── FULLSCREEN OVERLAY ─── */
+  #radioOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #0e0e0c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    overflow: hidden;
+  }
+
+  #radioOverlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Fond flou avec la pochette */
+  #radioBgBlur {
+    position: absolute;
+    inset: -40px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(60px) brightness(0.3) saturate(1.4);
+    transition: background-image 0.8s ease;
+    z-index: 0;
+  }
+
+  .radio-overlay-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 32px;
+  }
+
+  /* Pochette grande */
+  #radioFullArtwork {
+    width: 280px;
+    height: 280px;
+    border-radius: 12px;
+    background: #2a2a28;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+    flex-shrink: 0;
+    transition: transform 0.4s ease;
+  }
+
+  #radioFullArtwork img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  #radioFullArtwork svg {
+    width: 60px; height: 60px;
+    fill: #444;
+  }
+
+  #radioOverlay.playing #radioFullArtwork {
+    transform: scale(1.03);
+  }
+
+  /* Infos morceau */
+  .radio-full-info {
+    text-align: center;
+    width: 100%;
+  }
+
+  .radio-full-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .radio-full-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  .radio-full-artist {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.02em;
+  }
+
+  /* Contrôles plein écran */
+  .radio-full-controls {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .radio-full-play-btn {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, background 0.2s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .radio-full-play-btn:hover { transform: scale(1.08); background: #f0ede8; }
+  .radio-full-play-btn:active { transform: scale(0.96); }
+  .radio-full-play-btn svg { width: 24px; height: 24px; fill: #1a1a1a; }
+
+  /* Volume plein écran */
+  .radio-full-volume {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .radio-full-volume svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.4); flex-shrink: 0; }
+
+  .radio-full-vol-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 3px;
+    background: linear-gradient(to right, rgba(255,255,255,0.8) 80%, rgba(255,255,255,0.15) 80%);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .radio-full-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .radio-full-vol-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+  /* Bouton fermer */
+  #radioCloseBtn {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 2;
+  }
+
+  #radioCloseBtn:hover { background: rgba(255,255,255,0.2); }
+  #radioCloseBtn svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 2; stroke-linecap: round; fill: none; }
+
+  /* Visualizer plein écran */
+  .radio-full-vis {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 24px;
+  }
+
+  .radio-full-vis-bar {
+    width: 3px; height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+
+  #radioOverlay.playing .radio-full-vis-bar { background: rgba(255,255,255,0.7); }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(1)  { animation: radio-wave 1.0s ease-in-out infinite 0.00s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(2)  { animation: radio-wave 0.8s ease-in-out infinite 0.11s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(3)  { animation: radio-wave 1.2s ease-in-out infinite 0.05s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(4)  { animation: radio-wave 0.9s ease-in-out infinite 0.22s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(5)  { animation: radio-wave 1.1s ease-in-out infinite 0.15s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(6)  { animation: radio-wave 0.7s ease-in-out infinite 0.30s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(7)  { animation: radio-wave 1.3s ease-in-out infinite 0.08s; }
+  #radioOverlay.playing .radio-full-vis-bar:nth-child(8)  { animation: radio-wave 1.0s ease-in-out infinite 0.25s; }
 
   @media (max-width: 640px) {
     .radio-bar { padding: 0 16px; height: 64px; }
@@ -292,10 +487,14 @@
     .radio-live-pill { display: none; }
     .radio-visualizer { display: none; }
     .radio-artwork { width: 36px; height: 36px; }
+    .radio-expand-hint { display: none; }
+    #radioFullArtwork { width: 220px; height: 220px; }
+    .radio-full-title { font-size: 16px; }
   }
 </style>
 
-<div class="radio-bar" id="radioBar">
+<!-- ─── PLAYER BAR ─── -->
+<div class="radio-bar" id="radioBar" onclick="radioHandleBarClick(event)">
   <div class="radio-section-station">
     <div class="radio-station-dot"></div>
     <div>
@@ -306,7 +505,7 @@
 
   <div class="radio-div"></div>
 
-  <button class="radio-play-btn" onclick="radioTogglePlay()" aria-label="Play / Pause">
+  <button class="radio-play-btn" id="radioPlayBtn" aria-label="Play / Pause">
     <svg id="radioIconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     <svg id="radioIconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
   </button>
@@ -336,11 +535,53 @@
 
   <div class="radio-div"></div>
 
-  <div class="radio-section-volume">
+  <span class="radio-expand-hint">Ouvrir</span>
+  <svg class="radio-chevron" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+
+  <div class="radio-div"></div>
+
+  <div class="radio-section-volume" onclick="event.stopPropagation()">
     <span class="radio-vol-icon">
       <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
     </span>
     <input type="range" class="radio-vol-slider" id="radioVolSlider" min="0" max="100" value="80" oninput="radioSetVolume(this.value)">
+  </div>
+</div>
+
+<!-- ─── FULLSCREEN OVERLAY ─── -->
+<div id="radioOverlay">
+  <div id="radioBgBlur"></div>
+
+  <button id="radioCloseBtn" onclick="radioCloseOverlay()">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
+  <div class="radio-overlay-inner">
+
+    <div id="radioFullArtwork">
+      <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    </div>
+
+    <div class="radio-full-info">
+      <div class="radio-full-label">À l'antenne — Radio MiraMira</div>
+      <div class="radio-full-title" id="radioFullTitle">—</div>
+      <div class="radio-full-artist" id="radioFullArtist"></div>
+    </div>
+
+    <div class="radio-full-vis" id="radioFullVis"></div>
+
+    <div class="radio-full-controls">
+      <button class="radio-full-play-btn" onclick="radioTogglePlay()">
+        <svg id="radioFullIconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="radioFullIconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+    </div>
+
+    <div class="radio-full-volume">
+      <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+      <input type="range" class="radio-full-vol-slider" id="radioFullVolSlider" min="0" max="100" value="80" oninput="radioSetVolume(this.value)">
+    </div>
+
   </div>
 </div>
 
@@ -349,46 +590,58 @@
 </audio>
 
 <script>
+  /* ── Visualizers ── */
   const radioVis = document.getElementById('radioVisualizer');
   for (let i = 0; i < 15; i++) {
-    const b = document.createElement('div');
-    b.className = 'radio-bar-vis';
-    radioVis.appendChild(b);
+    const b = document.createElement('div'); b.className = 'radio-bar-vis'; radioVis.appendChild(b);
+  }
+  const radioFullVis = document.getElementById('radioFullVis');
+  for (let i = 0; i < 8; i++) {
+    const b = document.createElement('div'); b.className = 'radio-full-vis-bar'; radioFullVis.appendChild(b);
   }
 
   const radioAudio    = document.getElementById('radioAudio');
   const radioBar      = document.getElementById('radioBar');
+  const radioOverlay  = document.getElementById('radioOverlay');
   let radioPlaying    = false;
   let radioNpInterval = null;
-  let radioCurrentTrack = '';
+  let radioCurrentArt = '';
 
-  // Restore volume
-  const savedVolume = parseFloat(sessionStorage.getItem('radio_volume') || '0.8');
-  radioAudio.volume = savedVolume;
-  document.getElementById('radioVolSlider').value = savedVolume * 100;
+  /* ── Volume restore ── */
+  const savedVol = parseFloat(sessionStorage.getItem('radio_volume') || '0.8');
+  radioAudio.volume = savedVol;
+  document.getElementById('radioVolSlider').value     = savedVol * 100;
+  document.getElementById('radioFullVolSlider').value = savedVol * 100;
+  const volPct = savedVol * 100;
   document.getElementById('radioVolSlider').style.background =
-    `linear-gradient(to right, #1a1a1a ${savedVolume*100}%, #d8d5cf ${savedVolume*100}%)`;
+    `linear-gradient(to right, #1a1a1a ${volPct}%, #d8d5cf ${volPct}%)`;
+  document.getElementById('radioFullVolSlider').style.background =
+    `linear-gradient(to right, rgba(255,255,255,0.8) ${volPct}%, rgba(255,255,255,0.15) ${volPct}%)`;
 
-  // Préchargement immédiat dès le chargement de l'iframe
-  // pour que le buffer soit prêt quand on lance la lecture
-  if (sessionStorage.getItem('radio_playing') === '1') {
-    radioAudio.load();
-  }
+  /* ── Préchargement immédiat ── */
+  if (sessionStorage.getItem('radio_playing') === '1') radioAudio.load();
 
+  /* ── Now Playing — refresh toutes les 5 secondes ── */
   function radioFetchNowPlaying() {
     fetch('https://radio.radiomiramira.com/api/nowplaying/radiomiramira')
       .then(r => r.json())
       .then(data => {
         if (!data || !data.now_playing) return;
-        const song    = data.now_playing.song;
-        const trackId = song.id || song.title;
-        const title   = song.title  || '';
-        const artist  = song.artist || '';
-        const album   = song.album  || '';
-        document.getElementById('radioNpTitle').textContent = title || 'En cours...';
-        document.getElementById('radioNpSub').textContent   = [artist, album].filter(Boolean).join(' — ');
-        if (song.art && trackId !== radioCurrentTrack) {
-          radioCurrentTrack = trackId;
+        const song   = data.now_playing.song;
+        const title  = song.title  || '';
+        const artist = song.artist || '';
+        const album  = song.album  || '';
+        const sub    = [artist, album].filter(Boolean).join(' — ');
+
+        document.getElementById('radioNpTitle').textContent   = title || 'En cours...';
+        document.getElementById('radioNpSub').textContent     = sub;
+        document.getElementById('radioFullTitle').textContent  = title || '—';
+        document.getElementById('radioFullArtist').textContent = sub;
+
+        if (song.art && song.art !== radioCurrentArt) {
+          radioCurrentArt = song.art;
+
+          /* Pochette mini */
           const artwork     = document.getElementById('radioArtwork');
           const placeholder = document.getElementById('radioArtworkPlaceholder');
           let img = artwork.querySelector('img');
@@ -396,32 +649,54 @@
           img.src = song.art;
           img.onload  = () => { if (placeholder) placeholder.style.display = 'none'; };
           img.onerror = () => { if (placeholder) placeholder.style.display = ''; };
+
+          /* Pochette grande */
+          const fullArt = document.getElementById('radioFullArtwork');
+          let fullImg = fullArt.querySelector('img');
+          if (!fullImg) {
+            fullImg = document.createElement('img');
+            fullArt.appendChild(fullImg);
+          }
+          fullImg.src = song.art;
+          fullImg.onload = () => {
+            fullImg.style.display = 'block';
+            fullArt.querySelector('svg') && (fullArt.querySelector('svg').style.display = 'none');
+            document.getElementById('radioBgBlur').style.backgroundImage = `url('${song.art}')`;
+          };
         }
       })
       .catch(() => {});
   }
 
+  function radioUpdatePlayUI(playing) {
+    document.getElementById('radioIconPlay').style.display      = playing ? 'none' : '';
+    document.getElementById('radioIconPause').style.display     = playing ? '' : 'none';
+    document.getElementById('radioFullIconPlay').style.display  = playing ? 'none' : '';
+    document.getElementById('radioFullIconPause').style.display = playing ? '' : 'none';
+    radioBar.classList.toggle('playing', playing);
+    radioOverlay.classList.toggle('playing', playing);
+  }
+
   function radioStartPlaying() {
     radioAudio.play().then(() => {
-      radioBar.classList.add('playing');
-      document.getElementById('radioIconPlay').style.display  = 'none';
-      document.getElementById('radioIconPause').style.display = '';
-      radioFetchNowPlaying();
-      radioNpInterval = setInterval(radioFetchNowPlaying, 10000);
       radioPlaying = true;
+      radioUpdatePlayUI(true);
+      radioFetchNowPlaying();
+      clearInterval(radioNpInterval);
+      radioNpInterval = setInterval(radioFetchNowPlaying, 5000);
       sessionStorage.setItem('radio_playing', '1');
     }).catch(() => {
       radioAudio.load();
       radioAudio.play().then(() => {
-        radioBar.classList.add('playing');
-        document.getElementById('radioIconPlay').style.display  = 'none';
-        document.getElementById('radioIconPause').style.display = '';
-        radioFetchNowPlaying();
-        radioNpInterval = setInterval(radioFetchNowPlaying, 10000);
         radioPlaying = true;
+        radioUpdatePlayUI(true);
+        radioFetchNowPlaying();
+        clearInterval(radioNpInterval);
+        radioNpInterval = setInterval(radioFetchNowPlaying, 5000);
         sessionStorage.setItem('radio_playing', '1');
       }).catch(() => {
-        document.getElementById('radioNpTitle').textContent = '⚠️ Stream indisponible';
+        document.getElementById('radioNpTitle').textContent  = '⚠️ Stream indisponible';
+        document.getElementById('radioFullTitle').textContent = '⚠️ Stream indisponible';
         sessionStorage.removeItem('radio_playing');
       });
     });
@@ -430,13 +705,13 @@
   function radioTogglePlay() {
     if (radioPlaying) {
       radioAudio.pause();
-      radioBar.classList.remove('playing');
-      document.getElementById('radioIconPlay').style.display  = '';
-      document.getElementById('radioIconPause').style.display = 'none';
-      document.getElementById('radioNpTitle').textContent = 'En pause';
-      document.getElementById('radioNpSub').textContent   = '';
-      clearInterval(radioNpInterval);
       radioPlaying = false;
+      radioUpdatePlayUI(false);
+      document.getElementById('radioNpTitle').textContent  = 'En pause';
+      document.getElementById('radioFullTitle').textContent = 'En pause';
+      document.getElementById('radioNpSub').textContent    = '';
+      document.getElementById('radioFullArtist').textContent = '';
+      clearInterval(radioNpInterval);
       sessionStorage.removeItem('radio_playing');
     } else {
       radioAudio.load();
@@ -447,11 +722,43 @@
   function radioSetVolume(v) {
     radioAudio.volume = v / 100;
     sessionStorage.setItem('radio_volume', v / 100);
-    const slider = document.getElementById('radioVolSlider');
-    slider.style.background = `linear-gradient(to right, #1a1a1a ${v}%, #d8d5cf ${v}%)`;
+    document.getElementById('radioVolSlider').value     = v;
+    document.getElementById('radioFullVolSlider').value = v;
+    document.getElementById('radioVolSlider').style.background =
+      `linear-gradient(to right, #1a1a1a ${v}%, #d8d5cf ${v}%)`;
+    document.getElementById('radioFullVolSlider').style.background =
+      `linear-gradient(to right, rgba(255,255,255,0.8) ${v}%, rgba(255,255,255,0.15) ${v}%)`;
   }
 
-  // Auto-resume à 200ms grâce au préchargement fait plus haut
+  /* ── Overlay ── */
+  function radioOpenOverlay() {
+    document.documentElement.style.height = '100vh';
+    document.body.style.height = '100vh';
+    radioOverlay.classList.add('open');
+  }
+
+  function radioCloseOverlay() {
+    radioOverlay.classList.remove('open');
+    document.documentElement.style.height = '';
+    document.body.style.height = '';
+  }
+
+  function radioHandleBarClick(e) {
+    /* Ignore clic sur le bouton play et le volume */
+    if (e.target.closest('#radioPlayBtn') || e.target.closest('.radio-section-volume')) return;
+    radioOpenOverlay();
+  }
+
+  /* Bouton play de la bar (sans ouvrir l'overlay) */
+  document.getElementById('radioPlayBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    radioTogglePlay();
+  });
+
+  /* Fermer avec Escape */
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') radioCloseOverlay(); });
+
+  /* ── Auto-resume à 200ms ── */
   if (sessionStorage.getItem('radio_playing') === '1') {
     setTimeout(radioStartPlaying, 200);
   }
