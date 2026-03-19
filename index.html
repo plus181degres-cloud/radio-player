@@ -3,30 +3,28 @@
   @font-face {
     font-family: 'DeFonte';
     src: url('https://plus181degres-cloud.github.io/radio-player/DeFonte%20reduced%20DemiGras.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+    font-weight: normal; font-style: normal; font-display: swap;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 72px; overflow: hidden; background: transparent; font-family: 'Space Mono', monospace; }
+
   .radio-bar { position: relative; width: 100%; height: 72px; background: #ffffff; border-top: 1px solid #1a1a1a; display: flex; align-items: center; padding: 0 24px; cursor: pointer; }
-  .radio-section-station { display: flex; align-items: center; gap: 12px; min-width: 160px; }
-  .radio-station-dot { width: 7px; height: 7px; background: #c8c4bc; flex-shrink: 0; transition: background .4s; }
+  .radio-section-station { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .radio-station-dot { width: 6px; height: 6px; background: #c8c4bc; flex-shrink: 0; transition: background .4s; }
   .radio-bar.playing .radio-station-dot { background: #1a1a1a; animation: blink 2.2s ease-in-out infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-  .radio-station-label { font-size: 8px; letter-spacing: .2em; color: #b0aca4; text-transform: uppercase; line-height: 1; margin-bottom: 3px; }
-  .radio-station-name { font-family: 'DeFonte', 'Space Mono', monospace; font-size: 13px; color: #1a1a1a; line-height: 1; }
-  .radio-div { width: 1px; height: 28px; background: #e4e2dc; margin: 0 20px; flex-shrink: 0; }
+  .radio-station-label { font-size: 7px; letter-spacing: .2em; color: #b0aca4; text-transform: uppercase; line-height: 1; margin-bottom: 2px; }
+  .radio-station-name { font-family: 'DeFonte', 'Space Mono', monospace; font-size: 12px; color: #1a1a1a; line-height: 1; }
+  .radio-div { width: 1px; height: 26px; background: #e4e2dc; margin: 0 16px; flex-shrink: 0; }
   .radio-play-btn { width: 40px; height: 40px; background: #1a1a1a; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, transform .1s; position: relative; z-index: 2; }
   .radio-play-btn:hover { background: #333; }
   .radio-play-btn:active { transform: scale(.95); }
-  .radio-play-btn svg { width: 15px; height: 15px; fill: #fafaf8; }
-  .radio-section-live { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
-  .radio-artwork { width: 52px; height: 52px; background: #e8e6e0; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #e4e2dc; }
+  .radio-play-btn svg { width: 14px; height: 14px; fill: #fafaf8; }
+  .radio-section-live { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .radio-artwork { width: 46px; height: 46px; background: #e8e6e0; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #e4e2dc; }
   .radio-artwork img { width: 100%; height: 100%; object-fit: cover; }
-  .radio-artwork-placeholder svg { width: 18px; height: 18px; fill: #b0aca4; }
-  .radio-visualizer { display: flex; align-items: center; gap: 2px; height: 24px; flex-shrink: 0; }
+  .radio-artwork-placeholder svg { width: 16px; height: 16px; fill: #b0aca4; }
+  .radio-visualizer { display: flex; align-items: center; gap: 2px; height: 20px; flex-shrink: 0; }
   .radio-bar-vis { width: 2px; height: 3px; background: #d8d5cf; transition: background .3s; }
   .radio-bar.playing .radio-bar-vis { background: #1a1a1a; }
   .radio-bar.playing .radio-bar-vis:nth-child(1)  { animation: rw 1.0s ease-in-out infinite .00s; }
@@ -44,34 +42,46 @@
   .radio-bar.playing .radio-bar-vis:nth-child(13) { animation: rw 0.7s ease-in-out infinite .28s; }
   .radio-bar.playing .radio-bar-vis:nth-child(14) { animation: rw 1.4s ease-in-out infinite .07s; }
   .radio-bar.playing .radio-bar-vis:nth-child(15) { animation: rw 1.0s ease-in-out infinite .21s; }
-  @keyframes rw { 0%,100%{height:2px} 50%{height:20px} }
-  .radio-np-wrap { min-width: 0; }
-  .radio-np-label { font-size: 8px; letter-spacing: .18em; color: #b0aca4; text-transform: uppercase; margin-bottom: 2px; }
-  /* Titre du morceau en DeFonte */
-  .radio-np-title { font-family: 'DeFonte', 'Space Mono', monospace; font-size: 15px; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-  .radio-np-sub   { font-size: 10px; color: #888480; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .radio-np-genre { font-size: 9px; color: #b0aca4; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
-  .radio-expand-hint { font-size: 8px; letter-spacing: .15em; color: #c8c4bc; text-transform: uppercase; flex-shrink: 0; margin-right: 6px; }
-  .radio-chevron { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: #c8c4bc; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
+  @keyframes rw { 0%,100%{height:2px} 50%{height:18px} }
+  .radio-np-wrap { min-width: 0; flex: 1; }
+  .radio-np-label { font-size: 7px; letter-spacing: .18em; color: #b0aca4; text-transform: uppercase; margin-bottom: 2px; }
+  .radio-np-title { font-family: 'DeFonte', 'Space Mono', monospace; font-size: 14px; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+  .radio-np-sub   { font-size: 9px; color: #888480; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .radio-np-genre { font-size: 8px; color: #b0aca4; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .radio-expand-hint { font-size: 8px; letter-spacing: .15em; color: #c8c4bc; text-transform: uppercase; flex-shrink: 0; margin-right: 4px; }
+  .radio-chevron { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: #c8c4bc; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
   .radio-bar:hover .radio-chevron { stroke: #1a1a1a; }
-  .radio-section-volume { display: flex; align-items: center; gap: 10px; min-width: 140px; }
-  .radio-vol-icon svg { width: 14px; height: 14px; fill: #b0aca4; display: block; }
-  .radio-vol-slider { -webkit-appearance: none; appearance: none; width: 100px; height: 2px; background: linear-gradient(to right,#1a1a1a 80%,#d8d5cf 80%); outline: none; cursor: pointer; }
+  .radio-section-volume { display: flex; align-items: center; gap: 8px; min-width: 130px; }
+  .radio-vol-icon svg { width: 13px; height: 13px; fill: #b0aca4; display: block; }
+  .radio-vol-slider { -webkit-appearance: none; appearance: none; width: 90px; height: 2px; background: linear-gradient(to right,#1a1a1a 80%,#d8d5cf 80%); outline: none; cursor: pointer; }
   .radio-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #1a1a1a; cursor: pointer; }
-  .radio-live-pill { display: flex; align-items: center; gap: 6px; border: 1px solid #1a1a1a; padding: 5px 10px; opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s; flex-shrink: 0; }
+  .radio-live-pill { display: flex; align-items: center; gap: 5px; border: 1px solid #1a1a1a; padding: 4px 8px; opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s; flex-shrink: 0; }
   .radio-bar.playing .radio-live-pill { opacity: 1; transform: translateY(0); }
   .radio-live-dot { width: 5px; height: 5px; background: #1a1a1a; animation: blink 2s ease-in-out infinite; }
-  .radio-live-text { font-size: 8px; letter-spacing: .15em; color: #1a1a1a; text-transform: uppercase; }
+  .radio-live-text { font-size: 7px; letter-spacing: .15em; color: #1a1a1a; text-transform: uppercase; }
+
+  /* ── MOBILE — design épuré, lisible ── */
   @media (max-width: 640px) {
     html, body { height: 64px; }
-    .radio-bar { padding: 0 14px; height: 64px; }
-    .radio-div { margin: 0 10px; height: 24px; }
-    .radio-section-station { min-width: 85px; }
-    .radio-section-volume, .radio-live-pill, .radio-visualizer, .radio-expand-hint, .radio-chevron { display: none; }
-    .radio-artwork { width: 48px; height: 48px; }
-    .radio-play-btn { width: 34px; height: 34px; }
-    .radio-play-btn svg { width: 13px; height: 13px; }
-    .radio-np-title { font-size: 14px; }
+    .radio-bar { padding: 0 12px; height: 64px; gap: 0; }
+    .radio-div { margin: 0 10px; height: 22px; }
+    /* Cache les éléments non essentiels */
+    .radio-section-volume, .radio-live-pill, .radio-visualizer,
+    .radio-expand-hint, .radio-chevron { display: none; }
+    /* Divider après volume caché aussi */
+    .radio-div:last-of-type { display: none; }
+    /* Station — réduite */
+    .radio-section-station { min-width: 0; }
+    .radio-station-name { font-size: 10px; }
+    /* Pochette — même taille que le bouton play */
+    .radio-artwork { width: 40px; height: 40px; }
+    /* Bouton play — compact */
+    .radio-play-btn { width: 36px; height: 36px; }
+    .radio-play-btn svg { width: 12px; height: 12px; }
+    /* Titre — taille adaptée mobile */
+    .radio-np-title { font-size: 12px; }
+    .radio-np-sub   { font-size: 9px; }
+    .radio-np-genre { display: none; }
   }
 </style>
 
@@ -110,7 +120,8 @@
   <div class="radio-div"></div>
   <div class="radio-section-volume" onclick="event.stopPropagation()">
     <span class="radio-vol-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></span>
-    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80" oninput="post({type:'RADIO_CMD_VOLUME',volume:parseFloat(this.value)});this.style.background=`linear-gradient(to right,#1a1a1a ${this.value}%,#d8d5cf ${this.value}%)`">
+    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80"
+      oninput="post({type:'RADIO_CMD_VOLUME',volume:parseFloat(this.value)});this.style.background=`linear-gradient(to right,#1a1a1a ${this.value}%,#d8d5cf ${this.value}%)`">
   </div>
 </div>
 
@@ -121,8 +132,7 @@
   let currentSongId = '';
   function post(msg){ try{window.parent.postMessage(msg,'*');}catch(e){} }
   window.addEventListener('message', e => {
-    const d = e.data;
-    if (!d?.type) return;
+    const d = e.data; if (!d?.type) return;
     if (d.type === 'PARENT_STATE') {
       document.getElementById('iconPlay').style.display  = d.playing ? 'none' : '';
       document.getElementById('iconPause').style.display = d.playing ? '' : 'none';
@@ -134,8 +144,7 @@
       document.getElementById('npGenre').textContent = d.genre  || '';
       if (d.art && d.songId !== currentSongId) {
         currentSongId = d.songId;
-        const aw = document.getElementById('artwork');
-        const ph = document.getElementById('artPh');
+        const aw = document.getElementById('artwork'), ph = document.getElementById('artPh');
         let img = aw.querySelector('img');
         if (!img) { img = document.createElement('img'); aw.appendChild(img); }
         img.src = d.art;
@@ -145,17 +154,15 @@
     }
     if (d.type === 'PARENT_VOLUME') {
       const sl = document.getElementById('volSlider');
-      sl.value = d.volume;
-      sl.style.background = `linear-gradient(to right,#1a1a1a ${d.volume}%,#d8d5cf ${d.volume}%)`;
+      sl.value = d.volume; sl.style.background=`linear-gradient(to right,#1a1a1a ${d.volume}%,#d8d5cf ${d.volume}%)`;
     }
   });
-  document.getElementById('playBtn').addEventListener('click', e => { e.stopPropagation(); post({ type: 'RADIO_CMD_TOGGLE' }); });
+  document.getElementById('playBtn').addEventListener('click', e => { e.stopPropagation(); post({type:'RADIO_CMD_TOGGLE'}); });
   function handleBarClick(e) {
-    if (e.target.closest('#playBtn') || e.target.closest('.radio-section-volume')) return;
-    post({ type: 'RADIO_OPEN_OVERLAY' });
+    if (e.target.closest('#playBtn')||e.target.closest('.radio-section-volume')) return;
+    post({type:'RADIO_OPEN_OVERLAY'});
   }
-  const sv = parseFloat(sessionStorage.getItem('radio_volume') || '0.8') * 100;
+  const sv = parseFloat(sessionStorage.getItem('radio_volume')||'0.8')*100;
   const sl = document.getElementById('volSlider');
-  sl.value = sv;
-  sl.style.background = `linear-gradient(to right,#1a1a1a ${sv}%,#d8d5cf ${sv}%)`;
+  sl.value=sv; sl.style.background=`linear-gradient(to right,#1a1a1a ${sv}%,#d8d5cf ${sv}%)`;
 </script>
