@@ -2,17 +2,47 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Radio MiraMira Player</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-/* --- Ton CSS exactement comme tu l'avais envoyé --- */
-/* ... (tout le CSS de ton code initial, du début jusqu'à la fin du <style> ) ... */
+@font-face {
+  font-family: 'DeFonte';
+  src: url('DeFonte%20reduced%20DemiGras.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width:100%; height:100%; font-family: 'Space Mono', monospace; background: #fff; }
+
+.radio-bar {
+  position: fixed; bottom:0; width:100%; height:72px;
+  background:#fff; border-top:1px solid #1a1a1a;
+  display:flex; align-items:center; padding:0 24px;
+  cursor:pointer; z-index:9999;
+}
+.radio-section-station { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.radio-station-dot { width:6px; height:6px; background:#c8c4bc; flex-shrink:0; transition: background .4s; }
+.radio-bar.playing .radio-station-dot { background:#1a1a1a; animation: blink 2.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.radio-station-label { font-size:7px; letter-spacing:.2em; color:#b0aca4; text-transform:uppercase; line-height:1; margin-bottom:2px; }
+.radio-station-name { font-family:'DeFonte','Space Mono',monospace; font-size:12px; color:#1a1a1a; line-height:1; }
+
+.radio-play-btn {
+  width:40px; height:40px; background:#1a1a1a; border:none;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:background .15s, transform .1s; position:relative; z-index:2;
+}
+.radio-play-btn:hover { background:#333; }
+.radio-play-btn:active { transform:scale(.95); }
+.radio-play-btn svg { width:14px; height:14px; fill:#fafaf8; }
 </style>
 </head>
 <body>
-<!-- --- Ton HTML exactement comme tu l'avais envoyé --- -->
-<div class="radio-bar" id="radioBar" onclick="handleBarClick(event)">
+
+<div class="radio-bar" id="radioBar">
   <div class="radio-section-station">
     <div class="radio-station-dot"></div>
     <div>
@@ -20,59 +50,40 @@
       <div class="radio-station-name">MiraMira</div>
     </div>
   </div>
-  <div class="radio-div"></div>
   <button class="radio-play-btn" id="playBtn" aria-label="Play / Pause">
-    <svg id="iconPlay"  viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
   </button>
-  <div class="radio-div"></div>
-  <div class="radio-section-live">
-    <div class="radio-artwork" id="artwork">
-      <div class="radio-artwork-placeholder" id="artPh">
-        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-      </div>
-    </div>
-    <div class="radio-visualizer" id="vis"></div>
-    <div class="radio-np-wrap">
-      <div class="radio-np-label">À l'antenne</div>
-      <div class="radio-np-title" id="npTitle">Play pour écouter</div>
-      <div class="radio-np-sub"   id="npSub"></div>
-      <div class="radio-np-genre" id="npGenre"></div>
-    </div>
-  </div>
-  <div class="radio-live-pill"><div class="radio-live-dot"></div><span class="radio-live-text">Live</span></div>
-  <div class="radio-div"></div>
-  <span class="radio-expand-hint">Ouvrir</span>
-  <svg class="radio-chevron" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-  <div class="radio-div"></div>
-  <div class="radio-section-volume" onclick="event.stopPropagation()">
-    <span class="radio-vol-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></span>
-    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80">
-  </div>
 </div>
 
-<audio id="radioAudioMain" preload="auto">
+<audio id="radioAudio" preload="auto">
   <source src="https://radio.radiomiramira.com/listen/radiomiramira/radio.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-/* --- Ton JS exactement comme tu l'avais envoyé, avec juste l'audio dans l'iframe --- */
-/* Initialisation du player et postMessage avec le parent */
-const audio = document.getElementById('radioAudioMain');
+const audio = document.getElementById('radioAudio');
 const playBtn = document.getElementById('playBtn');
-playBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  if(audio.paused) audio.play(); else audio.pause();
-  updateParentState();
-});
+const iconPlay = document.getElementById('iconPlay');
+const iconPause = document.getElementById('iconPause');
+const bar = document.getElementById('radioBar');
 
-function updateParentState(){
-  window.parent.postMessage({ type:'PARENT_STATE', playing: !audio.paused }, '*');
-  window.parent.postMessage({ type:'PARENT_NOWPLAYING', title: 'En cours...', artist:'', art:'', genre:'', songId:'' }, '*');
+let isPlaying = sessionStorage.getItem('radio_playing') === '1';
+
+function updateUI() {
+  bar.classList.toggle('playing', isPlaying);
+  iconPlay.style.display = isPlaying ? 'none' : '';
+  iconPause.style.display = isPlaying ? '' : 'none';
 }
 
-audio.addEventListener('play', updateParentState);
-audio.addEventListener('pause', updateParentState);
+function togglePlay() {
+  if(isPlaying){ audio.pause(); isPlaying=false; sessionStorage.setItem('radio_playing','0'); }
+  else { audio.play().catch(()=>{}); isPlaying=true; sessionStorage.setItem('radio_playing','1'); }
+  updateUI();
+}
+
+playBtn.addEventListener('click', e=>{ e.stopPropagation(); togglePlay(); });
+if(isPlaying){ audio.play().catch(()=>{}); updateUI(); }
 </script>
+
 </body>
 </html>
