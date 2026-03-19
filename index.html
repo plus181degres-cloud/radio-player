@@ -4,77 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Radio MiraMira Player</title>
-
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
-/* ─────────── CSS COMPLET DU PLAYER ─────────── */
-@font-face {
-  font-family: 'DeFonte';
-  src: url('https://plus181degres-cloud.github.io/radio-player/DeFonte%20reduced%20DemiGras.ttf') format('truetype');
-  font-weight: normal; font-style: normal; font-display: swap;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; background: transparent; font-family: 'Space Mono', monospace; }
+  /* ── Styles EXACTS de ton player ── */
+  @font-face {
+    font-family: 'DeFonte';
+    src: url('https://plus181degres-cloud.github.io/radio-player/DeFonte%20reduced%20DemiGras.ttf') format('truetype');
+    font-weight: normal; font-style: normal; font-display: swap;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; font-family: 'Space Mono', monospace; background: #fff; }
 
-/* ───────── Radio Bar ───────── */
-.radio-bar { position: fixed; bottom:0; left:0; width:100%; height:72px; background:#ffffff; border-top:1px solid #1a1a1a; display:flex; align-items:center; padding:0 24px; cursor:pointer; z-index:9999; }
-.radio-section-station { display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.radio-station-dot { width:6px; height:6px; background:#c8c4bc; flex-shrink:0; transition: background .4s; }
-.radio-bar.playing .radio-station-dot { background:#1a1a1a; animation: blink 2.2s ease-in-out infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-.radio-station-label { font-size:7px; letter-spacing:.2em; color:#b0aca4; text-transform:uppercase; line-height:1; margin-bottom:2px; }
-.radio-station-name { font-family:'DeFonte','Space Mono',monospace; font-size:12px; color:#1a1a1a; line-height:1; }
-.radio-div { width:1px; height:26px; background:#e4e2dc; margin:0 16px; flex-shrink:0; }
-.radio-play-btn { width:40px; height:40px; background:#1a1a1a; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition: background .15s, transform .1s; position:relative; z-index:2; }
-.radio-play-btn:hover { background:#333; }
-.radio-play-btn:active { transform:scale(.95); }
-.radio-play-btn svg { width:14px; height:14px; fill:#fafaf8; }
-.radio-section-live { flex:1; display:flex; align-items:center; gap:12px; min-width:0; }
-.radio-artwork { width:46px; height:46px; background:#e8e6e0; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid #e4e2dc; }
-.radio-artwork img { width:100%; height:100%; object-fit:cover; }
-.radio-visualizer { display:flex; align-items:center; gap:2px; height:20px; flex-shrink:0; }
-.radio-bar-vis { width:2px; height:3px; background:#d8d5cf; transition:background .3s; }
-.radio-bar.playing .radio-bar-vis { background:#1a1a1a; }
-.radio-np-wrap { min-width:0; flex:1; }
-.radio-np-label { font-size:7px; letter-spacing:.18em; color:#b0aca4; text-transform:uppercase; margin-bottom:2px; }
-.radio-np-title { font-family:'DeFonte','Space Mono',monospace; font-size:14px; color:#1a1a1a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.2; }
-.radio-np-sub { font-size:9px; color:#888480; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
-.radio-np-genre { font-size:8px; color:#b0aca4; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
-.radio-live-pill { display:flex; align-items:center; gap:5px; border:1px solid #1a1a1a; padding:4px 8px; opacity:0; transform:translateY(4px); transition:opacity .4s, transform .4s; flex-shrink:0; }
-.radio-bar.playing .radio-live-pill { opacity:1; transform:translateY(0); }
-.radio-live-dot { width:5px; height:5px; background:#1a1a1a; animation: blink 2s ease-in-out infinite; }
-.radio-live-text { font-size:7px; letter-spacing:.15em; color:#1a1a1a; text-transform:uppercase; }
-.radio-expand-hint { font-size:8px; letter-spacing:.15em; color:#c8c4bc; text-transform:uppercase; flex-shrink:0; margin-right:4px; }
-.radio-chevron { width:16px; height:16px; flex-shrink:0; fill:none; stroke:#c8c4bc; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; transition:stroke .2s; }
-.radio-bar:hover .radio-chevron { stroke:#1a1a1a; }
-.radio-section-volume { display:flex; align-items:center; gap:8px; min-width:130px; }
-.radio-vol-icon svg { width:13px; height:13px; fill:#b0aca4; display:block; }
-.radio-vol-slider { -webkit-appearance:none; appearance:none; width:90px; height:2px; background:linear-gradient(to right,#1a1a1a 80%,#d8d5cf 80%); outline:none; cursor:pointer; }
-.radio-vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:10px; background:#1a1a1a; cursor:pointer; }
+  .radio-bar { position: fixed; bottom:0; width: 100%; height: 72px; background: #ffffff; border-top: 1px solid #1a1a1a; display: flex; align-items: center; padding: 0 24px; cursor: pointer; z-index: 9999; }
+  .radio-section-station { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .radio-station-dot { width: 6px; height: 6px; background: #c8c4bc; flex-shrink: 0; transition: background .4s; }
+  .radio-bar.playing .radio-station-dot { background: #1a1a1a; animation: blink 2.2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+  .radio-station-label { font-size: 7px; letter-spacing: .2em; color: #b0aca4; text-transform: uppercase; line-height: 1; margin-bottom: 2px; }
+  .radio-station-name { font-family: 'DeFonte', 'Space Mono', monospace; font-size: 12px; color: #1a1a1a; line-height: 1; }
 
-/* Mobile */
-@media (max-width:640px) {
-  html, body { height:64px; }
-  .radio-bar { padding:0 12px; height:64px; gap:0; }
-  .radio-div { margin:0 10px; height:22px; }
-  .radio-section-volume, .radio-live-pill, .radio-visualizer, .radio-expand-hint, .radio-chevron { display:none; }
-  .radio-div:last-of-type { display:none; }
-  .radio-section-station { min-width:0; }
-  .radio-station-name { font-size:10px; }
-  .radio-artwork { width:40px; height:40px; }
-  .radio-play-btn { width:36px; height:36px; }
-  .radio-play-btn svg { width:12px; height:12px; }
-  .radio-np-title { font-size:12px; }
-  .radio-np-sub { font-size:9px; }
-  .radio-np-genre { display:none; }
-}
+  .radio-play-btn { width: 40px; height: 40px; background: #1a1a1a; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, transform .1s; position: relative; z-index: 2; }
+  .radio-play-btn:hover { background: #333; }
+  .radio-play-btn:active { transform: scale(.95); }
+  .radio-play-btn svg { width: 14px; height: 14px; fill: #fafaf8; }
+
+  /* ── Mobile responsive ── */
+  @media (max-width: 640px) {
+    .radio-bar { height: 64px; padding: 0 12px; }
+    .radio-station-name { font-size: 10px; }
+    .radio-play-btn { width: 36px; height: 36px; }
+    .radio-play-btn svg { width: 12px; height: 12px; }
+  }
 </style>
 </head>
-
 <body>
-<!-- ───────── PLAYER HTML ───────── -->
-<div class="radio-bar" id="radioBar" onclick="handleBarClick(event)">
+
+<div class="radio-bar" id="radioBar">
   <div class="radio-section-station">
     <div class="radio-station-dot"></div>
     <div>
@@ -82,63 +48,50 @@ html, body { width: 100%; height: 100%; background: transparent; font-family: 'S
       <div class="radio-station-name">MiraMira</div>
     </div>
   </div>
-  <div class="radio-div"></div>
   <button class="radio-play-btn" id="playBtn" aria-label="Play / Pause">
     <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
   </button>
-  <div class="radio-div"></div>
-  <div class="radio-section-live">
-    <div class="radio-artwork" id="artwork">
-      <div class="radio-artwork-placeholder" id="artPh">
-        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-      </div>
-    </div>
-    <div class="radio-visualizer" id="vis"></div>
-    <div class="radio-np-wrap">
-      <div class="radio-np-label">À l'antenne</div>
-      <div class="radio-np-title" id="npTitle">Play pour écouter</div>
-      <div class="radio-np-sub" id="npSub"></div>
-      <div class="radio-np-genre" id="npGenre"></div>
-    </div>
-  </div>
-  <div class="radio-live-pill"><div class="radio-live-dot"></div><span class="radio-live-text">Live</span></div>
-  <div class="radio-div"></div>
-  <span class="radio-expand-hint">Ouvrir</span>
-  <svg class="radio-chevron" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-  <div class="radio-div"></div>
-  <div class="radio-section-volume" onclick="event.stopPropagation()">
-    <span class="radio-vol-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></span>
-    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80">
-  </div>
 </div>
 
-<!-- ───────── AUDIO ───────── -->
-<audio id="radioAudioMain" preload="auto">
+<audio id="radioAudio" preload="auto">
   <source src="https://radio.radiomiramira.com/listen/radiomiramira/radio.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-/* ───────── JS PLAYER ───────── */
-const vis = document.getElementById('vis'); for(let i=0;i<15;i++){const b=document.createElement('div');b.className='radio-bar-vis';vis.appendChild(b);}
-const bar=document.getElementById('radioBar'); let currentSongId='', isPlaying=false;
+  const audio = document.getElementById('radioAudio');
+  const playBtn = document.getElementById('playBtn');
+  const iconPlay = document.getElementById('iconPlay');
+  const iconPause = document.getElementById('iconPause');
+  const bar = document.getElementById('radioBar');
 
-function post(msg){ try{window.parent.postMessage(msg,'*'); }catch(e){} }
+  // Récupération état depuis sessionStorage
+  let isPlaying = sessionStorage.getItem('radio_playing') === '1';
 
-document.getElementById('playBtn').addEventListener('click', e=>{ e.stopPropagation(); togglePlay(); });
-function handleBarClick(e){ if(e.target.closest('#playBtn')||e.target.closest('.radio-section-volume')) return; }
+  function updateUI() {
+    bar.classList.toggle('playing', isPlaying);
+    iconPlay.style.display  = isPlaying ? 'none' : '';
+    iconPause.style.display = isPlaying ? '' : 'none';
+  }
 
-const audio=document.getElementById('radioAudioMain');
-audio.volume=parseFloat(sessionStorage.getItem('radio_volume')||'0.8');
+  function togglePlay() {
+    if(isPlaying){
+      audio.pause();
+      isPlaying = false;
+      sessionStorage.setItem('radio_playing','0');
+    } else {
+      audio.play().catch(()=>{});
+      isPlaying = true;
+      sessionStorage.setItem('radio_playing','1');
+    }
+    updateUI();
+  }
 
-function togglePlay(){
-  if(isPlaying){ audio.pause(); isPlaying=false; bar.classList.remove('playing'); document.getElementById('iconPlay').style.display=''; document.getElementById('iconPause').style.display='none'; sessionStorage.removeItem('radio_playing'); }
-  else{ audio.play().then(()=>{ isPlaying=true; bar.classList.add('playing'); document.getElementById('iconPlay').style.display='none'; document.getElementById('iconPause').style.display=''; sessionStorage.setItem('radio_playing','1'); }).catch(()=>{}); }
-}
+  playBtn.addEventListener('click', e => { e.stopPropagation(); togglePlay(); });
 
-/* Volume */
-const sl=document.getElementById('volSlider'); sl.value=audio.volume*100;
-sl.oninput=function(){ audio.volume=parseFloat(this.value)/100; sessionStorage.setItem('radio_volume',audio.volume); this.style.background=`linear-gradient(to right,#1a1a1a ${this.value}%,#d8d5cf ${this.value}%)`; };
+  // Auto resume
+  if(isPlaying){ audio.play().catch(()=>{}); updateUI(); }
 </script>
+
 </body>
 </html>
