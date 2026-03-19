@@ -7,35 +7,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-  /* ── Styles EXACTS de ton player ── */
-  @font-face {
-    font-family: 'DeFonte';
-    src: url('https://plus181degres-cloud.github.io/radio-player/DeFonte%20reduced%20DemiGras.ttf') format('truetype');
-    font-weight: normal; font-style: normal; font-display: swap;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; font-family: 'Space Mono', monospace; background: #fff; }
+@font-face {
+  font-family: 'DeFonte';
+  src: url('DeFonte%20reduced%20DemiGras.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width:100%; height:100%; font-family: 'Space Mono', monospace; background: #fff; }
 
-  .radio-bar { position: fixed; bottom:0; width: 100%; height: 72px; background: #ffffff; border-top: 1px solid #1a1a1a; display: flex; align-items: center; padding: 0 24px; cursor: pointer; z-index: 9999; }
-  .radio-section-station { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-  .radio-station-dot { width: 6px; height: 6px; background: #c8c4bc; flex-shrink: 0; transition: background .4s; }
-  .radio-bar.playing .radio-station-dot { background: #1a1a1a; animation: blink 2.2s ease-in-out infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-  .radio-station-label { font-size: 7px; letter-spacing: .2em; color: #b0aca4; text-transform: uppercase; line-height: 1; margin-bottom: 2px; }
-  .radio-station-name { font-family: 'DeFonte', 'Space Mono', monospace; font-size: 12px; color: #1a1a1a; line-height: 1; }
+.radio-bar {
+  position: fixed; bottom:0; width:100%; height:72px;
+  background:#fff; border-top:1px solid #1a1a1a;
+  display:flex; align-items:center; padding:0 24px;
+  cursor:pointer; z-index:9999;
+}
+.radio-section-station { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.radio-station-dot { width:6px; height:6px; background:#c8c4bc; flex-shrink:0; transition: background .4s; }
+.radio-bar.playing .radio-station-dot { background:#1a1a1a; animation: blink 2.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.radio-station-label { font-size:7px; letter-spacing:.2em; color:#b0aca4; text-transform:uppercase; line-height:1; margin-bottom:2px; }
+.radio-station-name { font-family:'DeFonte','Space Mono',monospace; font-size:12px; color:#1a1a1a; line-height:1; }
 
-  .radio-play-btn { width: 40px; height: 40px; background: #1a1a1a; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, transform .1s; position: relative; z-index: 2; }
-  .radio-play-btn:hover { background: #333; }
-  .radio-play-btn:active { transform: scale(.95); }
-  .radio-play-btn svg { width: 14px; height: 14px; fill: #fafaf8; }
-
-  /* ── Mobile responsive ── */
-  @media (max-width: 640px) {
-    .radio-bar { height: 64px; padding: 0 12px; }
-    .radio-station-name { font-size: 10px; }
-    .radio-play-btn { width: 36px; height: 36px; }
-    .radio-play-btn svg { width: 12px; height: 12px; }
-  }
+.radio-play-btn {
+  width:40px; height:40px; background:#1a1a1a; border:none;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:background .15s, transform .1s; position:relative; z-index:2;
+}
+.radio-play-btn:hover { background:#333; }
+.radio-play-btn:active { transform:scale(.95); }
+.radio-play-btn svg { width:14px; height:14px; fill:#fafaf8; }
 </style>
 </head>
 <body>
@@ -59,38 +61,28 @@
 </audio>
 
 <script>
-  const audio = document.getElementById('radioAudio');
-  const playBtn = document.getElementById('playBtn');
-  const iconPlay = document.getElementById('iconPlay');
-  const iconPause = document.getElementById('iconPause');
-  const bar = document.getElementById('radioBar');
+const audio = document.getElementById('radioAudio');
+const playBtn = document.getElementById('playBtn');
+const iconPlay = document.getElementById('iconPlay');
+const iconPause = document.getElementById('iconPause');
+const bar = document.getElementById('radioBar');
 
-  // Récupération état depuis sessionStorage
-  let isPlaying = sessionStorage.getItem('radio_playing') === '1';
+let isPlaying = sessionStorage.getItem('radio_playing') === '1';
 
-  function updateUI() {
-    bar.classList.toggle('playing', isPlaying);
-    iconPlay.style.display  = isPlaying ? 'none' : '';
-    iconPause.style.display = isPlaying ? '' : 'none';
-  }
+function updateUI() {
+  bar.classList.toggle('playing', isPlaying);
+  iconPlay.style.display = isPlaying ? 'none' : '';
+  iconPause.style.display = isPlaying ? '' : 'none';
+}
 
-  function togglePlay() {
-    if(isPlaying){
-      audio.pause();
-      isPlaying = false;
-      sessionStorage.setItem('radio_playing','0');
-    } else {
-      audio.play().catch(()=>{});
-      isPlaying = true;
-      sessionStorage.setItem('radio_playing','1');
-    }
-    updateUI();
-  }
+function togglePlay() {
+  if(isPlaying){ audio.pause(); isPlaying=false; sessionStorage.setItem('radio_playing','0'); }
+  else { audio.play().catch(()=>{}); isPlaying=true; sessionStorage.setItem('radio_playing','1'); }
+  updateUI();
+}
 
-  playBtn.addEventListener('click', e => { e.stopPropagation(); togglePlay(); });
-
-  // Auto resume
-  if(isPlaying){ audio.play().catch(()=>{}); updateUI(); }
+playBtn.addEventListener('click', e=>{ e.stopPropagation(); togglePlay(); });
+if(isPlaying){ audio.play().catch(()=>{}); updateUI(); }
 </script>
 
 </body>
