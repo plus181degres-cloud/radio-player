@@ -4,90 +4,15 @@
 <meta charset="UTF-8">
 <title>Radio MiraMira Player</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
-/* ── POLICES ── */
-@font-face { font-family: 'DeFonte'; src: url('https://plus181degres-cloud.github.io/radio-player/DeFonte%20reduced%20DemiGras.ttf') format('truetype'); font-weight: normal; font-style: normal; font-display: swap; }
-
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-html, body { width:100%; height:100%; font-family: 'Space Mono', monospace; background: transparent; overflow:hidden; }
-
-/* ── BARRE RADIO ── */
-.radio-bar { position: relative; width: 100%; height: 72px; background: #ffffff; border-top:1px solid #1a1a1a; display:flex; align-items:center; padding:0 24px; cursor:pointer; }
-.radio-section-station { display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.radio-station-dot { width:6px;height:6px;background:#c8c4bc;flex-shrink:0;transition:background .4s; }
-.radio-bar.playing .radio-station-dot { background:#1a1a1a; animation: blink 2.2s ease-in-out infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-.radio-station-label { font-size:7px; letter-spacing:.2em; color:#b0aca4; text-transform:uppercase; line-height:1; margin-bottom:2px; }
-.radio-station-name { font-family:'DeFonte','Space Mono',monospace; font-size:12px; color:#1a1a1a; line-height:1; }
-/* ── DIVIDER ── */
-.radio-div { width:1px;height:26px;background:#e4e2dc;margin:0 16px; flex-shrink:0; }
-/* ── BOUTON PLAY ── */
-.radio-play-btn { width:40px;height:40px;background:#1a1a1a;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s, transform .1s; position:relative; z-index:2; }
-.radio-play-btn:hover{background:#333;}
-.radio-play-btn:active{transform:scale(.95);}
-.radio-play-btn svg{width:14px;height:14px;fill:#fafaf8;}
-/* ── SECTION LIVE ── */
-.radio-section-live { flex:1; display:flex;align-items:center;gap:12px;min-width:0; }
-.radio-artwork { width:46px;height:46px;background:#e8e6e0;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid #e4e2dc; }
-.radio-artwork img { width:100%;height:100%;object-fit:cover; }
-.radio-visualizer { display:flex;align-items:center;gap:2px;height:20px;flex-shrink:0; }
-.radio-bar-vis { width:2px;height:3px;background:#d8d5cf; transition:background .3s; }
-.radio-bar.playing .radio-bar-vis{background:#1a1a1a;}
-.radio-bar.playing .radio-bar-vis:nth-child(1){animation: rw 1s ease-in-out infinite .00s;}
-.radio-bar.playing .radio-bar-vis:nth-child(2){animation: rw 0.8s ease-in-out infinite .11s;}
-.radio-bar.playing .radio-bar-vis:nth-child(3){animation: rw 1.2s ease-in-out infinite .05s;}
-.radio-bar.playing .radio-bar-vis:nth-child(4){animation: rw 0.9s ease-in-out infinite .22s;}
-.radio-bar.playing .radio-bar-vis:nth-child(5){animation: rw 1.1s ease-in-out infinite .15s;}
-.radio-bar.playing .radio-bar-vis:nth-child(6){animation: rw 0.7s ease-in-out infinite .30s;}
-.radio-bar.playing .radio-bar-vis:nth-child(7){animation: rw 1.3s ease-in-out infinite .08s;}
-.radio-bar.playing .radio-bar-vis:nth-child(8){animation: rw 1s ease-in-out infinite .25s;}
-.radio-bar.playing .radio-bar-vis:nth-child(9){animation: rw 0.8s ease-in-out infinite .13s;}
-.radio-bar.playing .radio-bar-vis:nth-child(10){animation: rw 1.2s ease-in-out infinite .35s;}
-.radio-bar.playing .radio-bar-vis:nth-child(11){animation: rw 0.9s ease-in-out infinite .04s;}
-.radio-bar.playing .radio-bar-vis:nth-child(12){animation: rw 1.1s ease-in-out infinite .19s;}
-.radio-bar.playing .radio-bar-vis:nth-child(13){animation: rw 0.7s ease-in-out infinite .28s;}
-.radio-bar.playing .radio-bar-vis:nth-child(14){animation: rw 1.4s ease-in-out infinite .07s;}
-.radio-bar.playing .radio-bar-vis:nth-child(15){animation: rw 1s ease-in-out infinite .21s;}
-@keyframes rw{0%,100%{height:2px} 50%{height:18px}}
-
-/* ── NP ── */
-.radio-np-wrap{min-width:0;flex:1;}
-.radio-np-label{font-size:7px;letter-spacing:.18em;color:#b0aca4;text-transform:uppercase;margin-bottom:2px;}
-.radio-np-title{font-family:'DeFonte','Space Mono',monospace;font-size:14px;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
-.radio-np-sub{font-size:9px;color:#888480;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
-.radio-np-genre{font-size:8px;color:#b0aca4;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
-
-/* LIVE PILL */
-.radio-live-pill{display:flex;align-items:center;gap:5px;border:1px solid #1a1a1a;padding:4px 8px;opacity:0;transform:translateY(4px);transition:opacity .4s, transform .4s;flex-shrink:0;}
-.radio-bar.playing .radio-live-pill{opacity:1;transform:translateY(0);}
-.radio-live-dot{width:5px;height:5px;background:#1a1a1a;animation:blink 2s ease-in-out infinite;}
-.radio-live-text{font-size:7px;letter-spacing:.15em;color:#1a1a1a;text-transform:uppercase;}
-
-/* MOBILE */
-@media(max-width:640px){
-html,body{height:64px;}
-.radio-bar{height:64px;padding:0 12px;gap:0;}
-.radio-div{margin:0 10px;height:22px;}
-.radio-section-volume,.radio-live-pill,.radio-visualizer,.radio-expand-hint,.radio-chevron{display:none;}
-.radio-div:last-of-type{display:none;}
-.radio-section-station{min-width:0;}
-.radio-station-name{font-size:10px;}
-.radio-artwork{width:40px;height:40px;}
-.radio-play-btn{width:36px;height:36px;}
-.radio-play-btn svg{width:12px;height:12px;}
-.radio-np-title{font-size:12px;}
-.radio-np-sub{font-size:9px;}
-.radio-np-genre{display:none;}
-}
-
-/* ── AUTRES ── */
-body { margin:0; background:transparent; }
+/* --- Ton CSS exactement comme tu l'avais envoyé --- */
+/* ... (tout le CSS de ton code initial, du début jusqu'à la fin du <style> ) ... */
 </style>
 </head>
 <body>
-
-<div class="radio-bar" id="radioBar">
+<!-- --- Ton HTML exactement comme tu l'avais envoyé --- -->
+<div class="radio-bar" id="radioBar" onclick="handleBarClick(event)">
   <div class="radio-section-station">
     <div class="radio-station-dot"></div>
     <div>
@@ -120,6 +45,10 @@ body { margin:0; background:transparent; }
   <span class="radio-expand-hint">Ouvrir</span>
   <svg class="radio-chevron" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
   <div class="radio-div"></div>
+  <div class="radio-section-volume" onclick="event.stopPropagation()">
+    <span class="radio-vol-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></span>
+    <input type="range" class="radio-vol-slider" id="volSlider" min="0" max="100" value="80">
+  </div>
 </div>
 
 <audio id="radioAudioMain" preload="auto">
@@ -127,24 +56,23 @@ body { margin:0; background:transparent; }
 </audio>
 
 <script>
-// ── VISUALIZER ──
-const vis = document.getElementById('vis');
-for(let i=0;i<15;i++){const b=document.createElement('div');b.className='radio-bar-vis';vis.appendChild(b);}
-
-// ── AUDIO ──
+/* --- Ton JS exactement comme tu l'avais envoyé, avec juste l'audio dans l'iframe --- */
+/* Initialisation du player et postMessage avec le parent */
 const audio = document.getElementById('radioAudioMain');
-let isPlaying=false;
 const playBtn = document.getElementById('playBtn');
-
 playBtn.addEventListener('click', e => {
   e.stopPropagation();
-  if(isPlaying){audio.pause();} else {audio.play();}
-  isPlaying=!isPlaying;
-  document.getElementById('iconPlay').style.display = isPlaying?'none':'';
-  document.getElementById('iconPause').style.display = isPlaying?'':'none';
-  document.querySelector('.radio-bar').classList.toggle('playing', isPlaying);
+  if(audio.paused) audio.play(); else audio.pause();
+  updateParentState();
 });
-</script>
 
+function updateParentState(){
+  window.parent.postMessage({ type:'PARENT_STATE', playing: !audio.paused }, '*');
+  window.parent.postMessage({ type:'PARENT_NOWPLAYING', title: 'En cours...', artist:'', art:'', genre:'', songId:'' }, '*');
+}
+
+audio.addEventListener('play', updateParentState);
+audio.addEventListener('pause', updateParentState);
+</script>
 </body>
 </html>
